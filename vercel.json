@@ -7,38 +7,34 @@
       "use": "@vercel/static"
     }
   ],
-  "routes": [
+  "rewrites": [
     {
-      "src": "/",
-      "dest": "/index.html"
+      "source": "/",
+      "destination": "/index.html"
     },
     {
-      "src": "/auth",
-      "dest": "/auth.html"
+      "source": "/auth",
+      "destination": "/auth.html"
     },
     {
-      "src": "/profile",
-      "dest": "/profile.html"
+      "source": "/profile",
+      "destination": "/profile.html"
     },
     {
-      "src": "/match",
-      "dest": "/match.html"
+      "source": "/match",
+      "destination": "/match.html"
     },
     {
-      "src": "/chat",
-      "dest": "/chat.html"
+      "source": "/chat",
+      "destination": "/chat.html"
     },
     {
-      "src": "/reveal",
-      "dest": "/reveal.html"
+      "source": "/reveal",
+      "destination": "/reveal.html"
     },
     {
-      "src": "/generate-post",
-      "dest": "/generate-post.html"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
+      "source": "/generate-post",
+      "destination": "/generate-post.html"
     }
   ],
   "headers": [
