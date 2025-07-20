@@ -1,0 +1,33 @@
+{
+  "name": "twinspark",
+  "version": "1.0.0",
+  "description": "A modern web app for discovering and connecting with like-minded individuals nearby",
+  "main": "index.html",
+  "scripts": {
+    "dev": "node build.js && python3 -m http.server 3000",
+    "build": "node build.js",
+    "start": "node build.js && python3 -m http.server 3000",
+    "env:inject": "node build.js",
+    "deploy:functions": "./deploy-functions.sh",
+    "setup": "echo 'Please follow the SETUP.md guide to complete the setup'"
+  },
+  "keywords": [
+    "dating",
+    "social",
+    "location-based",
+    "matching",
+    "chat",
+    "ai"
+  ],
+  "author": "TwinSpark Team",
+  "license": "MIT",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.38.0",
+    "dotenv": "^16.0.3"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/twinspark"
+  }
+}

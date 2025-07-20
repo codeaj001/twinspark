@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TwinSpark - Professional Networking Made Simple</title>
+    <meta name="env-supabase_url" content="https://ebhcwkihkmubrxciwjso.supabase.co">
+    <meta name="env-supabase_anon_key" content="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViaGN3a2loa211YnJ4Y2l3anNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4NDk1ODMsImV4cCI6MjA2ODQyNTU4M30.Pu-46h13qB4GAulSPpwodj_S0AsiHjvspWznqVyAnCk">
+    <meta name="env-gemini_api_key" content="AIzaSyCiOpRjphqhGLJcFlEqkkvDDSVR9HMjM-o">
+    <meta name="env-app_env" content="development">
+    <meta name="env-app_url" content="http://localhost:3000">    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/modern-style.css">
+    <style>
+        /* Force clean white background */
+        body, html {
+            background: #ffffff !important;
+            background-color: #ffffff !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <div class="logo">
+                    <span class="logo-icon">⚡</span>
+                    <span class="logo-text">TwinSpark</span>
+                </div>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link active">Home</a>
+                <a href="profile.html" class="nav-link">Profile</a>
+                <a href="match.html" class="nav-link">Match</a>
+                <a href="chat.html" class="nav-link">Chat</a>
+                <a href="reveal.html" class="nav-link">Reveal</a>
+            </div>
+            <div class="nav-actions">
+                <a href="auth.html" class="btn btn-primary">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <div class="hero-grid">
+                    <div class="hero-content">
+                        <div class="hero-badge">
+                            <span class="badge-text">🚀 Professional networking reimagined</span>
+                        </div>
+                        <h1 class="hero-title">
+                            Build powerful connections with 
+                            <span class="gradient-text">like-minded professionals</span>
+                        </h1>
+                        <p class="hero-description">
+                            TwinSpark connects you with professionals who share your interests, skills, and vision. 
+                            Discover meaningful partnerships and accelerate your career growth.
+                        </p>
+                        <div class="hero-actions">
+                            <a href="auth.html" class="btn btn-primary btn-large">
+                                Start Connecting →
+                            </a>
+                            <a href="#features" class="btn btn-secondary btn-large">
+                                Learn More
+                            </a>
+                        </div>
+                        <div class="hero-stats">
+                            <div class="stat-item">
+                                <span class="stat-number">4.9</span>
+                                <span class="stat-label">User Rating</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">10K+</span>
+                                <span class="stat-label">Active Users</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">99.9%</span>
+                                <span class="stat-label">Match Success</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hero-visual">
+                        <div class="visual-container">
+                            <div class="floating-card card-1">
+                                <div class="card-content">
+                                    <div class="card-avatar">👨‍💻</div>
+                                    <div class="card-info">
+                                        <h4>Alex Johnson</h4>
+                                        <p>Full Stack Developer</p>
+                                        <div class="card-tags">
+                                            <span class="tag">React</span>
+                                            <span class="tag">Node.js</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="floating-card card-2">
+                                <div class="card-content">
+                                    <div class="card-avatar">👩‍🎨</div>
+                                    <div class="card-info">
+                                        <h4>Sarah Chen</h4>
+                                        <p>UI/UX Designer</p>
+                                        <div class="card-tags">
+                                            <span class="tag">Figma</span>
+                                            <span class="tag">Design</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="floating-card card-3">
+                                <div class="card-content">
+                                    <div class="card-avatar">👨‍💼</div>
+                                    <div class="card-info">
+                                        <h4>Michael Davis</h4>
+                                        <p>Product Manager</p>
+                                        <div class="card-tags">
+                                            <span class="tag">Strategy</span>
+                                            <span class="tag">Analytics</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="central-glow"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="features-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Why professionals choose TwinSpark</h2>
+                    <p class="section-subtitle">Everything you need to build meaningful professional connections</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🎯</div>
+                        <h3>Smart Matching</h3>
+                        <p>Our advanced algorithm connects you with professionals who complement your skills and share your interests.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔒</div>
+                        <h3>Privacy First</h3>
+                        <p>Your information stays private until you choose to reveal it. Build trust before sharing personal details.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💬</div>
+                        <h3>Seamless Chat</h3>
+                        <p>Start meaningful conversations with built-in messaging and video chat capabilities.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📍</div>
+                        <h3>Location-Based</h3>
+                        <p>Find professionals in your area or connect globally with remote-friendly individuals.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h3>Real-time Updates</h3>
+                        <p>Get instant notifications when someone matches with you or sends a message.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🌟</div>
+                        <h3>Quality Connections</h3>
+                        <p>Focus on quality over quantity with our curated matching system and verification process.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-content">
+                    <h2>Ready to spark your next connection?</h2>
+                    <p>Join thousands of professionals who have already found their perfect match</p>
+                    <div class="cta-actions">
+                        <a href="auth.html" class="btn btn-primary btn-large">
+                            Get Started for Free
+                            <span class="btn-icon">→</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <span class="logo-icon">⚡</span>
+                        <span class="logo-text">TwinSpark</span>
+                    </div>
+                    <p>Professional networking made simple and effective.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="link-group">
+                        <h4>Product</h4>
+                        <a href="profile.html">Profile</a>
+                        <a href="match.html">Matching</a>
+                        <a href="chat.html">Chat</a>
+                    </div>
+                    <div class="link-group">
+                        <h4>Company</h4>
+                        <a href="#">About</a>
+                        <a href="#">Contact</a>
+                        <a href="#">Privacy</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 TwinSpark. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/env.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

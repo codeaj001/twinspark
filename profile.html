@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Setup - TwinSpark</title>
+    <meta name="env-supabase_url" content="https://ebhcwkihkmubrxciwjso.supabase.co">
+    <meta name="env-supabase_anon_key" content="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViaGN3a2loa211YnJ4Y2l3anNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4NDk1ODMsImV4cCI6MjA2ODQyNTU4M30.Pu-46h13qB4GAulSPpwodj_S0AsiHjvspWznqVyAnCk">
+    <meta name="env-gemini_api_key" content="AIzaSyCiOpRjphqhGLJcFlEqkkvDDSVR9HMjM-o">
+    <meta name="env-app_env" content="development">
+    <meta name="env-app_url" content="http://localhost:3000">    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/modern-style.css">
+    <style>
+        /* Force clean white background */
+        body, html {
+            background: #ffffff !important;
+            background-color: #ffffff !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="index.html" class="logo">
+                    <span class="logo-icon">⚡</span>
+                    <span class="logo-text">TwinSpark</span>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="profile.html" class="nav-link active">Profile</a>
+                <a href="match.html" class="nav-link">Match</a>
+                <a href="chat.html" class="nav-link">Chat</a>
+                <a href="reveal.html" class="nav-link">Reveal</a>
+            </div>
+            <div class="nav-actions">
+                <a href="auth.html" class="btn btn-secondary">Logout</a>
+            </div>
+        </div>
+    </nav>
+    <main>
+        <div class="container">
+            <section class="profile-setup" style="padding: 60px 0;">
+                <div class="form-container">
+                <h2 id="profileTitle">Create Your Profile</h2>
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label for="name">Display Name</label>
+                        <input type="text" id="name" name="name" required>
+                        <span class="error-message" id="nameError"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bio">Bio</label>
+                        <textarea id="bio" name="bio" rows="4" placeholder="Tell us about yourself..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="lookingFor">Looking for</label>
+                        <input type="text" id="lookingFor" name="lookingFor" placeholder="What skills or expertise are you looking for? (e.g., Designer, Developer, Mentor, Business Partner)">
+                        <small class="input-help">Specify what type of person or skills you're seeking to connect with</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Interests</label>
+                        <div class="interests-grid">
+                            <div class="interest-item">
+                                <input type="checkbox" id="tech" name="interests" value="technology">
+                                <label for="tech">Technology</label>
+                            </div>
+                            <div class="interest-item">
+                                <input type="checkbox" id="music" name="interests" value="music">
+                                <label for="music">Music</label>
+                            </div>
+                            <div class="interest-item">
+                                <input type="checkbox" id="sports" name="interests" value="sports">
+                                <label for="sports">Sports</label>
+                            </div>
+                            <div class="interest-item">
+                                <input type="checkbox" id="art" name="interests" value="art">
+                                <label for="art">Art</label>
+                            </div>
+                            <div class="interest-item">
+                                <input type="checkbox" id="travel" name="interests" value="travel">
+                                <label for="travel">Travel</label>
+                            </div>
+                            <div class="interest-item">
+                                <input type="checkbox" id="books" name="interests" value="books">
+                                <label for="books">Books</label>
+                            </div>
+                            <div class="interest-item">
+                                <input type="checkbox" id="food" name="interests" value="food">
+                                <label for="food">Food</label>
+                            </div>
+                            <div class="interest-item">
+                                <input type="checkbox" id="fitness" name="interests" value="fitness">
+                                <label for="fitness">Fitness</label>
+                            </div>
+                        </div>
+                        <div class="custom-interests-container">
+                            <label for="customInterests">Custom Interests/Skills</label>
+                            <input type="text" id="customInterests" name="customInterests" placeholder="Add your own interests or skills (e.g., Photography, Cooking, Programming)...">
+                            <small class="input-help">Separate multiple interests with commas</small>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Avatar</label>
+                        <div class="avatar-selection-container">
+                            <!-- Emoji Avatars -->
+                            <div class="avatar-selection">
+                                <div class="avatar-option">
+                                    <input type="radio" id="avatar1" name="avatar" value="emoji:🌟" checked>
+                                    <label for="avatar1">🌟</label>
+                                </div>
+                                <div class="avatar-option">
+                                    <input type="radio" id="avatar2" name="avatar" value="emoji:🎨">
+                                    <label for="avatar2">🎨</label>
+                                </div>
+                                <div class="avatar-option">
+                                    <input type="radio" id="avatar3" name="avatar" value="emoji:🚀">
+                                    <label for="avatar3">🚀</label>
+                                </div>
+                                <div class="avatar-option">
+                                    <input type="radio" id="avatar4" name="avatar" value="emoji:💎">
+                                    <label for="avatar4">💎</label>
+                                </div>
+                                <div class="avatar-option">
+                                    <input type="radio" id="avatar5" name="avatar" value="emoji:🎯">
+                                    <label for="avatar5">🎯</label>
+                                </div>
+                                <div class="avatar-option">
+                                    <input type="radio" id="avatar6" name="avatar" value="emoji:⚡">
+                                    <label for="avatar6">⚡</label>
+                                </div>
+                                <div class="avatar-option">
+                                    <input type="radio" id="avatar7" name="avatar" value="emoji:🌈">
+                                    <label for="avatar7">🌈</label>
+                                </div>
+                                <div class="avatar-option">
+                                    <input type="radio" id="avatar8" name="avatar" value="emoji:🔥">
+                                    <label for="avatar8">🔥</label>
+                                </div>
+                            </div>
+                            
+                            <!-- Custom Avatar Upload -->
+                            <div class="custom-avatar-section">
+                                <div class="custom-avatar-divider">
+                                    <span>or upload your own</span>
+                                </div>
+                                
+                                <div class="custom-avatar-upload">
+                                    <input type="file" id="customAvatarFile" name="customAvatarFile" accept="image/*" style="display: none;">
+                                    <input type="radio" id="customAvatar" name="avatar" value="custom" style="display: none;">
+                                    
+                                    <div class="upload-area" id="uploadArea">
+                                        <div class="upload-icon">📁</div>
+                                        <p>Click to upload or drag & drop</p>
+                                        <small>PNG, JPG, GIF up to 2MB</small>
+                                    </div>
+                                    
+                                    <div class="custom-avatar-preview" id="customAvatarPreview" style="display: none;">
+                                        <img id="previewImage" src="" alt="Custom Avatar" />
+                                        <button type="button" class="remove-avatar-btn" id="removeAvatarBtn">×</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-large" style="width: 100%;">Save Profile</button>
+                </form>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <span class="logo-icon">⚡</span>
+                        <span class="logo-text">TwinSpark</span>
+                    </div>
+                    <p>Professional networking made simple and effective.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="link-group">
+                        <h4>Product</h4>
+                        <a href="profile.html">Profile</a>
+                        <a href="match.html">Matching</a>
+                        <a href="chat.html">Chat</a>
+                    </div>
+                    <div class="link-group">
+                        <h4>Company</h4>
+                        <a href="#">About</a>
+                        <a href="#">Contact</a>
+                        <a href="#">Privacy</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 TwinSpark. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/env.js"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/main.js"></script>
+    
+    <!-- Avatar Upload JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadArea = document.getElementById('uploadArea');
+            const customAvatarFile = document.getElementById('customAvatarFile');
+            const customAvatar = document.getElementById('customAvatar');
+            const customAvatarPreview = document.getElementById('customAvatarPreview');
+            const previewImage = document.getElementById('previewImage');
+            const removeAvatarBtn = document.getElementById('removeAvatarBtn');
+            
+            // Handle click on upload area
+            uploadArea.addEventListener('click', function() {
+                customAvatarFile.click();
+            });
+            
+            // Handle file selection
+            customAvatarFile.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    handleFileUpload(file);
+                }
+            });
+            
+            // Handle drag and drop
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                uploadArea.classList.add('drag-over');
+            });
+            
+            uploadArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('drag-over');
+            });
+            
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('drag-over');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    const file = files[0];
+                    if (file.type.startsWith('image/')) {
+                        customAvatarFile.files = files;
+                        handleFileUpload(file);
+                    } else {
+                        alert('Please upload an image file (PNG, JPG, GIF)');
+                    }
+                }
+            });
+            
+            // Handle remove avatar button
+            removeAvatarBtn.addEventListener('click', function() {
+                customAvatarFile.value = '';
+                customAvatarPreview.style.display = 'none';
+                uploadArea.style.display = 'block';
+                customAvatar.checked = false;
+                
+                // Select the first emoji avatar by default
+                document.getElementById('avatar1').checked = true;
+            });
+            
+            function handleFileUpload(file) {
+                // Validate file size (2MB limit)
+                if (file.size > 2 * 1024 * 1024) {
+                    alert('File size must be less than 2MB');
+                    return;
+                }
+                
+                // Validate file type
+                if (!file.type.startsWith('image/')) {
+                    alert('Please upload an image file (PNG, JPG, GIF)');
+                    return;
+                }
+                
+                // Create preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    customAvatarPreview.style.display = 'flex';
+                    uploadArea.style.display = 'none';
+                    
+                    // Select custom avatar option
+                    customAvatar.checked = true;
+                };
+                reader.readAsDataURL(file);
+            }
+            
+            // Handle avatar selection changes
+            const avatarOptions = document.querySelectorAll('input[name="avatar"]');
+            avatarOptions.forEach(option => {
+                option.addEventListener('change', function() {
+                    if (this.value !== 'custom') {
+                        // If emoji avatar is selected, hide custom preview
+                        customAvatarPreview.style.display = 'none';
+                        uploadArea.style.display = 'block';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

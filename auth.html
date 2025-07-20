@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication - TwinSpark</title>
+    <meta name="env-supabase_url" content="https://ebhcwkihkmubrxciwjso.supabase.co">
+    <meta name="env-supabase_anon_key" content="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViaGN3a2loa211YnJ4Y2l3anNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4NDk1ODMsImV4cCI6MjA2ODQyNTU4M30.Pu-46h13qB4GAulSPpwodj_S0AsiHjvspWznqVyAnCk">
+    <meta name="env-gemini_api_key" content="AIzaSyCiOpRjphqhGLJcFlEqkkvDDSVR9HMjM-o">
+    <meta name="env-app_env" content="development">
+    <meta name="env-app_url" content="http://localhost:3000">    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/modern-style.css">
+    <style>
+        /* Force clean white background */
+        body, html {
+            background: #ffffff !important;
+            background-color: #ffffff !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="index.html" class="logo">
+                    <span class="logo-icon">⚡</span>
+                    <span class="logo-text">TwinSpark</span>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="profile.html" class="nav-link">Profile</a>
+                <a href="match.html" class="nav-link">Match</a>
+                <a href="chat.html" class="nav-link">Chat</a>
+                <a href="reveal.html" class="nav-link">Reveal</a>
+            </div>
+        </div>
+    </nav>
+    <main>
+        <section class="auth-section">
+            <div class="auth-container">
+                <div class="auth-tabs">
+                    <button class="tab-button active" data-tab="login">Login</button>
+                    <button class="tab-button" data-tab="signup">Sign Up</button>
+                </div>
+                
+                <!-- Login Form -->
+                <div id="login" class="auth-form active">
+                    <h2>Welcome Back</h2>
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="loginEmail">Email</label>
+                            <input type="email" id="loginEmail" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">Password</label>
+                            <input type="password" id="loginPassword" name="password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-large" style="width: 100%;">Login</button>
+                    </form>
+                </div>
+                
+                <!-- Signup Form -->
+                <div id="signup" class="auth-form">
+                    <h2>Join TwinSpark</h2>
+                    <form id="signupForm">
+                        <div class="form-group">
+                            <label for="signupUsername">Username</label>
+                            <input type="text" id="signupUsername" name="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signupEmail">Email</label>
+                            <input type="email" id="signupEmail" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signupPassword">Password</label>
+                            <input type="password" id="signupPassword" name="password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm Password</label>
+                            <input type="password" id="confirmPassword" name="confirmPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-large" style="width: 100%;">Sign Up</button>
+                    </form>
+                </div>
+                
+                <div class="auth-divider">
+                    <span>or</span>
+                </div>
+                
+                <!-- Social Login (Optional) -->
+                <div class="social-login">
+                    <button class="social-btn google-btn" disabled>
+                        <span>🔍</span> Continue with Google
+                    </button>
+                    <button class="social-btn github-btn" disabled>
+                        <span>🐙</span> Continue with GitHub
+                    </button>
+                </div>
+                
+                <div class="auth-footer">
+                    <p>By continuing, you agree to our Terms of Service and Privacy Policy</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/env.js"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html>

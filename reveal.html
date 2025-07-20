@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reveal Identity - TwinSpark</title>
+    <meta name="env-supabase_url" content="https://ebhcwkihkmubrxciwjso.supabase.co">
+    <meta name="env-supabase_anon_key" content="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViaGN3a2loa211YnJ4Y2l3anNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4NDk1ODMsImV4cCI6MjA2ODQyNTU4M30.Pu-46h13qB4GAulSPpwodj_S0AsiHjvspWznqVyAnCk">
+    <meta name="env-gemini_api_key" content="AIzaSyCiOpRjphqhGLJcFlEqkkvDDSVR9HMjM-o">
+    <meta name="env-app_env" content="development">
+    <meta name="env-app_url" content="http://localhost:3000">    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/modern-style.css">
+    <style>
+        /* Force clean white background */
+        body, html {
+            background: #ffffff !important;
+            background-color: #ffffff !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="index.html" class="logo">
+                    <span class="logo-icon">⚡</span>
+                    <span class="logo-text">TwinSpark</span>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="profile.html" class="nav-link">Profile</a>
+                <a href="match.html" class="nav-link">Match</a>
+                <a href="chat.html" class="nav-link">Chat</a>
+                <a href="reveal.html" class="nav-link active">Reveal</a>
+            </div>
+        </div>
+    </nav>
+    <main style="padding: 60px 0;">
+        <section class="reveal-section">
+            <div class="reveal-container">
+                <div class="reveal-header">
+                    <h2>Ready to Reveal?</h2>
+                    <p>Both users must agree to reveal their identities</p>
+                </div>
+                
+                <div class="reveal-status" id="revealStatus">
+                    <div class="user-reveal-status">
+                        <div class="user-status">
+                            <span class="avatar">🌟</span>
+                            <div class="status-text">
+                                <h4>You</h4>
+                                <p id="yourStatus">Waiting for decision...</p>
+                            </div>
+                            <div class="status-indicator" id="yourIndicator">⏳</div>
+                        </div>
+                        
+                        <div class="user-status">
+                            <span class="avatar">🎨</span>
+                            <div class="status-text">
+                                <h4>Match</h4>
+                                <p id="matchStatus">Waiting for decision...</p>
+                            </div>
+                            <div class="status-indicator" id="matchIndicator">⏳</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reveal-actions" id="revealActions">
+                    <button id="agreeBtn" class="reveal-agree-btn">Agree to Reveal</button>
+                    <button id="declineBtn" class="reveal-decline-btn">Keep Anonymous</button>
+                </div>
+                
+                <div class="reveal-result" id="revealResult" style="display: none;">
+                    <div class="revealed-profiles">
+                        <div class="revealed-profile">
+                            <div class="profile-avatar">🌟</div>
+                            <h3 id="yourName">Your Name</h3>
+                            <p id="yourBio">Your bio here...</p>
+                            <div class="contact-info">
+                                <button class="contact-btn">📧 Email</button>
+                                <button class="contact-btn">📱 Phone</button>
+                            </div>
+                        </div>
+                        
+                        <div class="revealed-profile">
+                            <div class="profile-avatar">🎨</div>
+                            <h3 id="matchName">Match Name</h3>
+                            <p id="matchBio">Match bio here...</p>
+                            <div class="contact-info">
+                                <button class="contact-btn">📧 Email</button>
+                                <button class="contact-btn">📱 Phone</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="success-message">
+                        <h3>🎉 Connection Established!</h3>
+                        <p>You can now connect outside of TwinSpark</p>
+                        <button class="add-connection-btn">Add to Connections</button>
+                    </div>
+                </div>
+                
+                <div class="connection-history">
+                    <h3>Your Spark History</h3>
+                    <div class="history-list" id="historyList">
+                        <!-- Connection history will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>© 2025 TwinSpark. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/env.js"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

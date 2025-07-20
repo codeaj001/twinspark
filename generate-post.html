@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Post - TwinSpark</title>
+    <meta name="env-supabase_url" content="https://ebhcwkihkmubrxciwjso.supabase.co">
+    <meta name="env-supabase_anon_key" content="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViaGN3a2loa211YnJ4Y2l3anNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4NDk1ODMsImV4cCI6MjA2ODQyNTU4M30.Pu-46h13qB4GAulSPpwodj_S0AsiHjvspWznqVyAnCk">
+    <meta name="env-gemini_api_key" content="AIzaSyCiOpRjphqhGLJcFlEqkkvDDSVR9HMjM-o">
+    <meta name="env-app_env" content="development">
+    <meta name="env-app_url" content="http://localhost:3000">    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/modern-style.css">
+    <style>
+        /* Force clean white background */
+        body, html {
+            background: #ffffff !important;
+            background-color: #ffffff !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="index.html" class="logo">
+                    <span class="logo-icon">⚡</span>
+                    <span class="logo-text">TwinSpark</span>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="profile.html" class="nav-link">Profile</a>
+                <a href="match.html" class="nav-link">Match</a>
+                <a href="chat.html" class="nav-link">Chat</a>
+                <a href="reveal.html" class="nav-link">Reveal</a>
+            </div>
+        </div>
+    </nav>
+    <main>
+        <section class="post-generator">
+            <div class="post-container">
+                <h2>AI Post Generator</h2>
+                <p>Create a social media post about your TwinSpark connection!</p>
+                
+                <div class="post-form">
+                    <div class="form-group">
+                        <label for="conversationSummary">Conversation Summary</label>
+                        <textarea 
+                            id="conversationSummary" 
+                            name="conversationSummary" 
+                            rows="6" 
+                            placeholder="Describe your conversation... For example: 'We both love hiking and discovered we've been to the same trails. Talked about favorite outdoor spots and planned a future hike together. They're studying environmental science and I'm into photography - great combo for nature adventures!'"
+                            required></textarea>
+                        <div class="char-counter">
+                            <span id="charCount">0</span> / 500 characters
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Post Style</label>
+                        <div class="style-options">
+                            <div class="style-option">
+                                <input type="radio" id="casual" name="style" value="casual" checked>
+                                <label for="casual">Casual & Fun</label>
+                            </div>
+                            <div class="style-option">
+                                <input type="radio" id="professional" name="style" value="professional">
+                                <label for="professional">Professional</label>
+                            </div>
+                            <div class="style-option">
+                                <input type="radio" id="inspirational" name="style" value="inspirational">
+                                <label for="inspirational">Inspirational</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button id="generateBtn" class="cta-button">Generate Post</button>
+                </div>
+                
+                <div class="generated-post" id="generatedPost" style="display: none;">
+                    <h3>Generated Post</h3>
+                    <div class="post-content" id="postContent"></div>
+                    <div class="post-actions">
+                        <button id="copyBtn" class="copy-btn">Copy</button>
+                        <button id="regenerateBtn" class="regenerate-btn">Regenerate</button>
+                        <button id="shareBtn" class="share-btn">Share</button>
+                    </div>
+                </div>
+                
+                <div class="previous-posts" id="previousPosts">
+                    <h3>Previous Posts</h3>
+                    <div class="posts-list" id="postsList">
+                        <!-- Previous posts will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>© 2025 TwinSpark. All Rights Reserved.</p>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/env.js"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/post-generator.js"></script>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Matches - TwinSpark</title>
+    <meta name="env-supabase_url" content="https://ebhcwkihkmubrxciwjso.supabase.co">
+    <meta name="env-supabase_anon_key" content="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViaGN3a2loa211YnJ4Y2l3anNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4NDk1ODMsImV4cCI6MjA2ODQyNTU4M30.Pu-46h13qB4GAulSPpwodj_S0AsiHjvspWznqVyAnCk">
+    <meta name="env-gemini_api_key" content="AIzaSyCiOpRjphqhGLJcFlEqkkvDDSVR9HMjM-o">
+    <meta name="env-app_env" content="development">
+    <meta name="env-app_url" content="http://localhost:3000">    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/modern-style.css">
+    <style>
+        /* Force clean white background */
+        body, html {
+            background: #ffffff !important;
+            background-color: #ffffff !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="index.html" class="logo">
+                    <span class="logo-icon">⚡</span>
+                    <span class="logo-text">TwinSpark</span>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="profile.html" class="nav-link">Profile</a>
+                <a href="match.html" class="nav-link active">Match</a>
+                <a href="chat.html" class="nav-link">Chat</a>
+                <a href="reveal.html" class="nav-link">Reveal</a>
+            </div>
+        </div>
+    </nav>
+    <main style="padding: 60px 0;">
+        <div class="container">
+            <section class="matching">
+                <div class="matching-header" style="text-align: center; margin-bottom: 60px; color: #1a1a1a;">
+                    <h2 style="font-size: 48px; font-weight: 700; margin-bottom: 16px;">Discover Your Spark</h2>
+                    <p style="font-size: 20px; color: #64748b;">Find people with similar interests nearby</p>
+                </div>
+                
+                <!-- Location & Matching Controls -->
+                <div class="location-controls">
+                    <div class="location-card">
+                        <div class="location-header">
+                            <span class="location-icon">📍</span>
+                            <div class="location-info">
+                                <h4>Your Location</h4>
+                                <p id="locationText">Getting location...</p>
+                            </div>
+                            <button id="updateLocationBtn" class="btn-icon" title="Update Location">
+                                <span>↻</span>
+                            </button>
+                        </div>
+                        <div class="location-settings">
+                            <label for="searchRadius">Search Radius:</label>
+                            <select id="searchRadius" class="radius-select">
+                                <option value="500" selected>500m (Walking Distance)</option>
+                                <option value="1000">1km (Nearby)</option>
+                                <option value="5000">5km (Local Area)</option>
+                                <option value="10000">10km (Extended Area)</option>
+                                <option value="25000">25km (City Wide)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="match-controls">
+                    <div class="control-group">
+                        <button id="refreshBtn" class="btn btn-secondary">
+                            Refresh Matches
+                        </button>
+                        <button id="realtimeToggle" class="btn btn-primary">
+                            Start Real-time Matching
+                        </button>
+                    </div>
+                    
+                    <div class="matching-filters">
+                        <div class="filter-group">
+                            <label for="interestMatch">Minimum Interest Match:</label>
+                            <select id="interestMatch" class="filter-select">
+                                <option value="1">At least 1 common interest</option>
+                                <option value="2" selected>At least 2 common interests</option>
+                                <option value="3">At least 3 common interests</option>
+                                <option value="4">At least 4 common interests</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            
+            <div class="matching-status" id="matchingStatus" style="display: none;">
+                <div class="status-indicator">
+                    <div class="pulse-dot"></div>
+                    <span>Searching for matches nearby...</span>
+                </div>
+            </div>
+            
+            <div class="matches-container" id="matchesContainer">
+                <!-- Matches will be dynamically populated here -->
+            </div>
+            
+                <div class="no-matches" id="noMatches" style="display: none; text-align: center; padding: 60px; color: #64748b;">
+                    <h3 style="font-size: 24px; margin-bottom: 16px;">No matches found</h3>
+                    <p>Try refreshing or expanding your interests</p>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <span class="logo-icon">⚡</span>
+                        <span class="logo-text">TwinSpark</span>
+                    </div>
+                    <p>Professional networking made simple and effective.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="link-group">
+                        <h4>Product</h4>
+                        <a href="profile.html">Profile</a>
+                        <a href="match.html">Matching</a>
+                        <a href="chat.html">Chat</a>
+                    </div>
+                    <div class="link-group">
+                        <h4>Company</h4>
+                        <a href="#">About</a>
+                        <a href="#">Contact</a>
+                        <a href="#">Privacy</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 TwinSpark. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/env.js"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/realtime-matching.js"></script>
+    <script src="js/match.js"></script>
+</body>
+</html>
