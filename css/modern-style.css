@@ -415,6 +415,11 @@ body {
     padding: 60px 0 24px;
 }
 
+.footer-links {
+    display: flex;
+    gap: 200px;
+}
+
 .footer-content {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr;
