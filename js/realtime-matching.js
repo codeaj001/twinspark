@@ -73,7 +73,7 @@ class RealtimeMatchingService {
                         lng: position.coords.longitude,
                         accuracy: position.coords.accuracy
                     };
-                    console.log('📍 Current location:', this.currentLocation);
+                    console.log('Current location:', this.currentLocation);
                     resolve(this.currentLocation);
                 },
                 (error) => {
@@ -102,13 +102,13 @@ class RealtimeMatchingService {
 
                 // Check if location changed significantly (more than 10 meters)
                 if (this.hasLocationChanged(newLocation, 10)) {
-                    console.log('📍 Location updated:', newLocation);
+                    console.log('Location updated:', newLocation);
                     this.currentLocation = newLocation;
                     this.updateLocationInDatabase();
                 }
             },
             (error) => {
-                console.error('❌ Location tracking error:', error);
+                console.error('Location tracking error:', error);
             },
             {
                 enableHighAccuracy: true,
@@ -173,7 +173,7 @@ class RealtimeMatchingService {
             localStorage.setItem('twinsparkUser', JSON.stringify(user));
 
         } catch (error) {
-            console.error('❌ Failed to update location:', error);
+            console.error('Failed to update location:', error);
         }
     }
 
@@ -204,7 +204,7 @@ class RealtimeMatchingService {
         try {
             const user = JSON.parse(localStorage.getItem('twinsparkUser') || '{}');
             if (!user.interests || user.interests.length === 0) {
-                console.log('⚠️ No interests set, skipping match check');
+                console.log('No interests set, skipping match check');
                 return;
             }
 
@@ -215,14 +215,14 @@ class RealtimeMatchingService {
             const matches = await this.findNearbyMatches(user);
             
             if (matches.length > 0) {
-                console.log(`🎉 Found ${matches.length} potential matches!`);
+                console.log(`Found ${matches.length} potential matches!`);
                 this.handleNewMatches(matches);
             } else {
-                console.log('😔 No matches found nearby');
+                console.log('No matches found nearby');
             }
 
         } catch (error) {
-            console.error('❌ Error checking for matches:', error);
+            console.error('Error checking for matches:', error);
         }
     }
 
@@ -323,7 +323,7 @@ class RealtimeMatchingService {
         
         // Browser notification
         if (this.notificationPermission === 'granted') {
-            const notification = new Notification('🎯 Match Found!', {
+            const notification = new Notification('Match Found!', {
                 body: `${match.name} is ${match.distance}m away${reasonText}`,
                 icon: '/favicon.ico',
                 tag: `match-${match.id}`,
@@ -339,7 +339,7 @@ class RealtimeMatchingService {
 
         // In-app notification
         window.TwinSpark.showMessage(
-            `🎯 Match found! ${match.name} is ${match.distance}m away${reasonText}`,
+            `Match found! ${match.name} is ${match.distance}m away${reasonText}`,
             'success'
         );
 
@@ -365,7 +365,7 @@ class RealtimeMatchingService {
         const user = JSON.parse(localStorage.getItem('twinsparkUser') || '{}');
         if (user.name && user.interests && user.interests.length > 0) {
             // Don't auto-start to avoid overwhelming users
-            console.log('✅ Profile complete. Ready for matching.');
+            console.log('Profile complete. Ready for matching.');
         }
     }
 

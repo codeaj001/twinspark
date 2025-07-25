@@ -30,3 +30,4 @@ This project is open source and available under the MIT License.
 ---
 
 **Built with ❤️ for connecting people through shared interests**
+

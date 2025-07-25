@@ -2,12 +2,63 @@
 // Handles matchmaking logic and UI rendering
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Show welcome message for dashboard experience
+    showWelcomeMessage();
+    
     initializeMatchingSystem();
     requestLocationPermission(); // Request permission immediately on load
     setupRealtimeControls();
     setupLocationControls();
     setupFilterControls();
 });
+
+// Show welcome message for first-time or returning users
+function showWelcomeMessage() {
+    const welcomeMessage = document.getElementById('welcomeMessage');
+    if (!welcomeMessage) return;
+    
+    // Check if user is coming from login/index redirect or first visit today
+    const referrer = document.referrer;
+    const hasShownToday = localStorage.getItem('welcomeShownToday');
+    const today = new Date().toDateString();
+    
+    // Show welcome if:
+    // 1. Coming from index.html or auth.html
+    // 2. Haven't shown welcome today
+    // 3. No referrer (direct access)
+    const shouldShowWelcome = 
+        referrer.includes('index.html') || 
+        referrer.includes('auth.html') || 
+        hasShownToday !== today ||
+        !referrer;
+    
+    if (shouldShowWelcome) {
+        welcomeMessage.style.display = 'block';
+        
+        // Set flag to not show again today
+        localStorage.setItem('welcomeShownToday', today);
+        
+        // Auto-hide after 10 seconds
+        setTimeout(() => {
+            welcomeMessage.style.transition = 'opacity 0.5s ease';
+            welcomeMessage.style.opacity = '0';
+            setTimeout(() => {
+                welcomeMessage.style.display = 'none';
+                welcomeMessage.style.opacity = '1'; // Reset for next time
+            }, 500);
+        }, 10000);
+        
+        // Allow manual dismiss on click
+        welcomeMessage.addEventListener('click', () => {
+            welcomeMessage.style.transition = 'opacity 0.3s ease';
+            welcomeMessage.style.opacity = '0';
+            setTimeout(() => {
+                welcomeMessage.style.display = 'none';
+                welcomeMessage.style.opacity = '1';
+            }, 300);
+        });
+    }
+}
 
 // Initialize matching system
 function initializeMatchingSystem() {
@@ -69,24 +120,9 @@ function setupLocationControls() {
 
 // Setup filter controls
 function setupFilterControls() {
-    const interestMatch = document.getElementById('interestMatch');
-    
-    // Load saved filters
-    const savedFilters = JSON.parse(localStorage.getItem('matchingFilters') || '{}');
-    if (savedFilters.interestMatch) interestMatch.value = savedFilters.interestMatch;
-    
-    // Save filters on change
-    function saveFilters() {
-        const filters = {
-            interestMatch: parseInt(interestMatch.value) || 2
-        };
-        localStorage.setItem('matchingFilters', JSON.stringify(filters));
-        
-        // Reload matches with new filters
-        setTimeout(loadMatches, 300);
-    }
-    
-    interestMatch.addEventListener('change', saveFilters);
+    // Interest matching is now automatically determined by the system
+    // based on user profile and preferences
+    console.log('Filter controls initialized');
 }
 
 // Format radius for display
@@ -619,6 +655,7 @@ function handleSkip(match, matchCard) {
     
     TwinSpark.showMessage('Match skipped', 'info');
 }
+
 
 // Add animation for match cards
 const style = document.createElement('style');

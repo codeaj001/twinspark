@@ -8,7 +8,7 @@
     <meta name="env-supabase_anon_key" content="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViaGN3a2loa211YnJ4Y2l3anNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4NDk1ODMsImV4cCI6MjA2ODQyNTU4M30.Pu-46h13qB4GAulSPpwodj_S0AsiHjvspWznqVyAnCk">
     <meta name="env-gemini_api_key" content="AIzaSyCiOpRjphqhGLJcFlEqkkvDDSVR9HMjM-o">
     <meta name="env-app_env" content="production">
-    <meta name="env-app_url" content="https://twinspark.vercel.app">    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <meta name="env-app_url" content="http://localhost:3000">    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/modern-style.css">
@@ -37,12 +37,19 @@
                 <a href="chat.html" class="nav-link">Chat</a>
                 <a href="reveal.html" class="nav-link">Reveal</a>
             </div>
+            <div class="nav-actions">
+                <!-- Navigation actions will be populated by navigation.js -->
+            </div>
         </div>
     </nav>
     <main style="padding: 60px 0;">
         <div class="container">
             <section class="matching">
                 <div class="matching-header" style="text-align: center; margin-bottom: 60px; color: #1a1a1a;">
+                    <div id="welcomeMessage" style="display: none; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 24px; border-radius: 16px; margin-bottom: 40px;">
+                        <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 8px;">Welcome to your Dashboard!</h2>
+                        <p style="font-size: 18px; opacity: 0.9; margin: 0;">Ready to find your next connection?</p>
+                    </div>
                     <h2 style="font-size: 48px; font-weight: 700; margin-bottom: 16px;">Discover Your Spark</h2>
                     <p style="font-size: 20px; color: #64748b;">Find people with similar interests nearby</p>
                 </div>
@@ -81,18 +88,6 @@
                         <button id="realtimeToggle" class="btn btn-primary">
                             Start Real-time Matching
                         </button>
-                    </div>
-                    
-                    <div class="matching-filters">
-                        <div class="filter-group">
-                            <label for="interestMatch">Minimum Interest Match:</label>
-                            <select id="interestMatch" class="filter-select">
-                                <option value="1">At least 1 common interest</option>
-                                <option value="2" selected>At least 2 common interests</option>
-                                <option value="3">At least 3 common interests</option>
-                                <option value="4">At least 4 common interests</option>
-                            </select>
-                        </div>
                     </div>
                 </div>
             
@@ -150,6 +145,7 @@
     <script src="js/env.js"></script>
     <script src="js/supabase.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/navigation.js"></script>
     <script src="js/realtime-matching.js"></script>
     <script src="js/match.js"></script>
 </body>

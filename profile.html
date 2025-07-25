@@ -8,7 +8,7 @@
     <meta name="env-supabase_anon_key" content="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImViaGN3a2loa211YnJ4Y2l3anNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4NDk1ODMsImV4cCI6MjA2ODQyNTU4M30.Pu-46h13qB4GAulSPpwodj_S0AsiHjvspWznqVyAnCk">
     <meta name="env-gemini_api_key" content="AIzaSyCiOpRjphqhGLJcFlEqkkvDDSVR9HMjM-o">
     <meta name="env-app_env" content="production">
-    <meta name="env-app_url" content="https://twinspark.vercel.app">    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <meta name="env-app_url" content="http://localhost:3000">    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/modern-style.css">
@@ -17,6 +17,67 @@
         body, html {
             background: #ffffff !important;
             background-color: #ffffff !important;
+        }
+        
+        /* Profile display styles */
+        .profile-info {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .info-section {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .info-section h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .info-section p {
+            margin: 0;
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        .interests-display {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .interest-tag {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .profile-avatar {
+            transition: transform 0.3s ease;
+        }
+        
+        .profile-avatar:hover {
+            transform: scale(1.05);
+        }
+        
+        @media (min-width: 768px) {
+            .profile-info {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .info-section:nth-child(1) {
+                grid-column: span 2;
+            }
         }
     </style>
 </head>
@@ -46,8 +107,35 @@
         <div class="container">
             <section class="profile-setup" style="padding: 60px 0;">
                 <div class="form-container">
-                <h2 id="profileTitle">Create Your Profile</h2>
-                <form id="profileForm">
+                <!-- Profile Display Section -->
+                <div id="profileDisplay" style="display: none;">
+                    <div class="profile-header" style="text-align: center; margin-bottom: 40px;">
+                        <div id="displayAvatar" class="profile-avatar" style="width: 100px; height: 100px; border-radius: 50%; font-size: 60px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                            🌟
+                        </div>
+                        <h2 id="displayName">Your Profile</h2>
+                        <button type="button" id="editProfileBtn" class="btn btn-secondary" style="margin-top: 15px;">Edit Profile</button>
+                    </div>
+                    <div class="profile-info">
+                        <div class="info-section">
+                            <h3>About</h3>
+                            <p id="displayBio">-</p>
+                        </div>
+                        <div class="info-section">
+                            <h3>Looking For</h3>
+                            <p id="displayLookingFor">-</p>
+                        </div>
+                        <div class="info-section">
+                            <h3>Interests</h3>
+                            <div id="displayInterests" class="interests-display"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Profile Form Section -->
+                <div id="profileFormContainer">
+                    <h2 id="profileTitle">Create Your Profile</h2>
+                    <form id="profileForm">
                     <div class="form-group">
                         <label for="name">Display Name</label>
                         <input type="text" id="name" name="name" required>
@@ -173,6 +261,7 @@
                     </div>
                     
                     <button type="submit" class="btn btn-primary btn-large" style="width: 100%;">Save Profile</button>
+                    <button type="button" id="cancelEditBtn" class="btn btn-secondary" style="width: 100%; margin-top: 15px; display: none;">Cancel</button>
                 </form>
                 </div>
             </section>
@@ -215,9 +304,282 @@
     <script src="js/supabase.js"></script>
     <script src="js/main.js"></script>
     
-    <!-- Avatar Upload JavaScript -->
+    <!-- Navigation and Notification Script -->
+    <script src="js/navigation.js"></script>
+    
+    <!-- Profile Management JavaScript -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        let currentUser = null;
+        let isEditMode = false;
+        
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Initialize navigation
+            const navHandler = new NavigationHandler();
+            await navHandler.init();
+            
+            // Check authentication and load profile
+            await checkAuthAndLoadProfile();
+            
+            // Setup event listeners
+            setupProfileEventListeners();
+            
+            // Setup avatar upload functionality
+            setupAvatarUpload();
+        });
+        
+        async function checkAuthAndLoadProfile() {
+            try {
+                const { data: { user } } = await supabase.auth.getUser();
+                
+                if (!user) {
+                    window.location.href = 'auth.html';
+                    return;
+                }
+                
+                currentUser = user;
+                
+                // Try to load existing profile
+                const { data: profile, error } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('user_id', user.id)
+                    .single();
+                
+                if (profile && !error) {
+                    // Profile exists - show display mode
+                    showProfileDisplay(profile);
+                } else {
+                    // No profile - show form mode
+                    showProfileForm();
+                }
+            } catch (error) {
+                console.error('Error checking auth:', error);
+                window.location.href = 'auth.html';
+            }
+        }
+        
+        function showProfileDisplay(profile) {
+            document.getElementById('profileDisplay').style.display = 'block';
+            document.getElementById('profileFormContainer').style.display = 'none';
+            
+            // Populate display fields
+            document.getElementById('displayName').textContent = profile.name || 'Your Profile';
+            document.getElementById('displayBio').textContent = profile.bio || '-';
+            document.getElementById('displayLookingFor').textContent = profile.looking_for || '-';
+            
+            // Handle avatar display
+            const avatarElement = document.getElementById('displayAvatar');
+            if (profile.avatar && profile.avatar.startsWith('emoji:')) {
+                const emoji = profile.avatar.replace('emoji:', '');
+                avatarElement.textContent = emoji;
+                avatarElement.style.backgroundImage = 'none';
+            } else if (profile.avatar && profile.avatar.startsWith('custom:')) {
+                avatarElement.innerHTML = `<img src="${profile.avatar.replace('custom:', '')}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"/>`;
+            } else {
+                avatarElement.textContent = '🌟';
+                avatarElement.style.backgroundImage = 'none';
+            }
+            
+            // Handle interests display
+            const interestsContainer = document.getElementById('displayInterests');
+            interestsContainer.innerHTML = '';
+            
+            if (profile.interests && profile.interests.length > 0) {
+                profile.interests.forEach(interest => {
+                    const tag = document.createElement('span');
+                    tag.className = 'interest-tag';
+                    tag.textContent = interest;
+                    interestsContainer.appendChild(tag);
+                });
+            } else {
+                interestsContainer.innerHTML = '<p style="color: #666; margin: 0;">No interests added</p>';
+            }
+            
+            isEditMode = false;
+        }
+        
+        function showProfileForm(profile = null) {
+            document.getElementById('profileDisplay').style.display = 'none';
+            document.getElementById('profileFormContainer').style.display = 'block';
+            
+            if (profile) {
+                // Edit mode - populate form
+                document.getElementById('profileTitle').textContent = 'Edit Your Profile';
+                document.getElementById('cancelEditBtn').style.display = 'block';
+                
+                document.getElementById('name').value = profile.name || '';
+                document.getElementById('bio').value = profile.bio || '';
+                document.getElementById('lookingFor').value = profile.looking_for || '';
+                
+                // Handle avatar selection
+                if (profile.avatar && profile.avatar.startsWith('emoji:')) {
+                    const emoji = profile.avatar.replace('emoji:', '');
+                    const avatarInputs = document.querySelectorAll('input[name="avatar"]');
+                    avatarInputs.forEach(input => {
+                        if (input.value === profile.avatar) {
+                            input.checked = true;
+                        }
+                    });
+                }
+                
+                // Handle interests
+                if (profile.interests) {
+                    // Clear all checkboxes first
+                    document.querySelectorAll('input[name="interests"]').forEach(cb => cb.checked = false);
+                    
+                    // Check relevant boxes and handle custom interests
+                    const standardInterests = ['technology', 'music', 'sports', 'art', 'travel', 'books', 'food', 'fitness'];
+                    const customInterests = [];
+                    
+                    profile.interests.forEach(interest => {
+                        const lowerInterest = interest.toLowerCase();
+                        if (standardInterests.includes(lowerInterest)) {
+                            const checkbox = document.querySelector(`input[value="${lowerInterest}"]`);
+                            if (checkbox) checkbox.checked = true;
+                        } else {
+                            customInterests.push(interest);
+                        }
+                    });
+                    
+                    if (customInterests.length > 0) {
+                        document.getElementById('customInterests').value = customInterests.join(', ');
+                    }
+                }
+            } else {
+                // Create mode
+                document.getElementById('profileTitle').textContent = 'Create Your Profile';
+                document.getElementById('cancelEditBtn').style.display = 'none';
+            }
+            
+            isEditMode = profile !== null;
+        }
+        
+        function setupProfileEventListeners() {
+            // Edit profile button
+            document.getElementById('editProfileBtn').addEventListener('click', async function() {
+                try {
+                    const { data: profile, error } = await supabase
+                        .from('profiles')
+                        .select('*')
+                        .eq('user_id', currentUser.id)
+                        .single();
+                    
+                    if (profile && !error) {
+                        showProfileForm(profile);
+                    }
+                } catch (error) {
+                    console.error('Error loading profile for edit:', error);
+                    alert('Error loading profile. Please try again.');
+                }
+            });
+            
+            // Cancel edit button
+            document.getElementById('cancelEditBtn').addEventListener('click', async function() {
+                try {
+                    const { data: profile, error } = await supabase
+                        .from('profiles')
+                        .select('*')
+                        .eq('user_id', currentUser.id)
+                        .single();
+                    
+                    if (profile && !error) {
+                        showProfileDisplay(profile);
+                    }
+                } catch (error) {
+                    console.error('Error canceling edit:', error);
+                }
+            });
+            
+            // Form submission
+            document.getElementById('profileForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                await handleProfileSave();
+            });
+        }
+        
+        async function handleProfileSave() {
+            if (!currentUser) {
+                alert('Please log in to save your profile.');
+                return;
+            }
+            
+            // Collect form data
+            const name = document.getElementById('name').value.trim();
+            const bio = document.getElementById('bio').value.trim();
+            const lookingFor = document.getElementById('lookingFor').value.trim();
+            
+            if (!name) {
+                alert('Please enter a display name.');
+                return;
+            }
+            
+            // Collect interests
+            const selectedInterests = [];
+            document.querySelectorAll('input[name="interests"]:checked').forEach(cb => {
+                selectedInterests.push(cb.value);
+            });
+            
+            // Add custom interests
+            const customInterests = document.getElementById('customInterests').value.trim();
+            if (customInterests) {
+                const customList = customInterests.split(',').map(item => item.trim()).filter(item => item);
+                selectedInterests.push(...customList);
+            }
+            
+            // Get selected avatar
+            const selectedAvatar = document.querySelector('input[name="avatar"]:checked');
+            let avatarValue = 'emoji:🌟'; // default
+            
+            if (selectedAvatar && selectedAvatar.value === 'custom') {
+                const customFile = document.getElementById('customAvatarFile').files[0];
+                if (customFile) {
+                    // For now, we'll use a data URL. In production, you'd upload to storage
+                    const reader = new FileReader();
+                    avatarValue = await new Promise((resolve) => {
+                        reader.onload = (e) => resolve(`custom:${e.target.result}`);
+                        reader.readAsDataURL(customFile);
+                    });
+                } else {
+                    avatarValue = 'emoji:🌟';
+                }
+            } else if (selectedAvatar) {
+                avatarValue = selectedAvatar.value;
+            }
+            
+            const profileData = {
+                user_id: currentUser.id,
+                name,
+                bio,
+                looking_for: lookingFor,
+                interests: selectedInterests,
+                avatar: avatarValue,
+                updated_at: new Date().toISOString()
+            };
+            
+            try {
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .upsert(profileData)
+                    .select()
+                    .single();
+                
+                if (error) {
+                    console.error('Error saving profile:', error);
+                    alert('Error saving profile. Please try again.');
+                    return;
+                }
+                
+                // Success - show display mode
+                showProfileDisplay(data);
+                alert(isEditMode ? 'Profile updated successfully!' : 'Profile created successfully!');
+                
+            } catch (error) {
+                console.error('Error saving profile:', error);
+                alert('Error saving profile. Please try again.');
+            }
+        }
+        
+        function setupAvatarUpload() {
             const uploadArea = document.getElementById('uploadArea');
             const customAvatarFile = document.getElementById('customAvatarFile');
             const customAvatar = document.getElementById('customAvatar');

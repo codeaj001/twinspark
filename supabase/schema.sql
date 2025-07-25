@@ -12,10 +12,13 @@ CREATE TABLE users (
     looking_for TEXT,
     location GEOMETRY(Point, 4326),
     is_online BOOLEAN DEFAULT FALSE,
+    is_discoverable BOOLEAN DEFAULT TRUE,
     avatar TEXT DEFAULT '1',
     bio TEXT,
     age INTEGER CHECK (age >= 18 AND age <= 100),
     last_active TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    last_location_update TIMESTAMP WITH TIME ZONE,
+    notification_preferences JSONB DEFAULT '{"match_found": true, "chat_message": true, "reveal_request": true}',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -54,18 +57,46 @@ CREATE TABLE posts (
 CREATE TABLE notifications (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    type TEXT NOT NULL CHECK (type IN ('match_found', 'chat_message', 'reveal_request', 'reveal_accepted')),
+    type TEXT NOT NULL CHECK (type IN ('match_found', 'chat_message', 'reveal_request', 'reveal_accepted', 'profile_view', 'system')),
+    title TEXT NOT NULL,
+    message TEXT NOT NULL,
     data JSONB,
     is_read BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Location tracking table for real-time updates
+CREATE TABLE location_updates (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    location GEOMETRY(Point, 4326) NOT NULL,
+    accuracy FLOAT,
+    timestamp TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- User settings table
+CREATE TABLE user_settings (
+    user_id UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+    match_radius INTEGER DEFAULT 500 CHECK (match_radius >= 100 AND match_radius <= 50000),
+    age_range_min INTEGER DEFAULT 18 CHECK (age_range_min >= 18),
+    age_range_max INTEGER DEFAULT 100 CHECK (age_range_max <= 100),
+    push_notifications BOOLEAN DEFAULT TRUE,
+    email_notifications BOOLEAN DEFAULT TRUE,
+    show_distance BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 -- Indexes for better performance
 CREATE INDEX idx_users_location ON users USING GIST (location);
 CREATE INDEX idx_users_interests ON users USING GIN (interests);
+CREATE INDEX idx_users_discoverable ON users(is_discoverable, is_online);
+CREATE INDEX idx_users_online_discoverable ON users(is_online, is_discoverable, last_active);
 CREATE INDEX idx_matches_users ON matches(user_id_1, user_id_2);
 CREATE INDEX idx_chats_match_id ON chats(match_id);
-CREATE INDEX idx_notifications_user_id ON notifications(user_id);
+CREATE INDEX idx_notifications_user_id ON notifications(user_id, is_read, created_at);
+CREATE INDEX idx_location_updates_user_timestamp ON location_updates(user_id, timestamp);
+CREATE INDEX idx_location_updates_location ON location_updates USING GIST (location);
 
 -- Row Level Security (RLS) policies
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
@@ -73,6 +104,8 @@ ALTER TABLE matches ENABLE ROW LEVEL SECURITY;
 ALTER TABLE chats ENABLE ROW LEVEL SECURITY;
 ALTER TABLE posts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
+ALTER TABLE location_updates ENABLE ROW LEVEL SECURITY;
+ALTER TABLE user_settings ENABLE ROW LEVEL SECURITY;
 
 -- Users can only see their own profile and profiles of matched users
 CREATE POLICY "Users can view own profile" ON users FOR SELECT USING (auth.uid() = id);
@@ -125,6 +158,15 @@ CREATE POLICY "Users can create posts for their matches" ON posts FOR INSERT WIT
 CREATE POLICY "Users can view their notifications" ON notifications FOR SELECT USING (auth.uid() = user_id);
 CREATE POLICY "Users can update their notifications" ON notifications FOR UPDATE USING (auth.uid() = user_id);
 CREATE POLICY "System can insert notifications" ON notifications FOR INSERT WITH CHECK (true);
+
+-- Location updates policies
+CREATE POLICY "Users can view their location updates" ON location_updates FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Users can insert their location updates" ON location_updates FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+-- User settings policies
+CREATE POLICY "Users can view their settings" ON user_settings FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Users can update their settings" ON user_settings FOR UPDATE USING (auth.uid() = user_id);
+CREATE POLICY "Users can insert their settings" ON user_settings FOR INSERT WITH CHECK (auth.uid() = user_id);
 
 -- Functions for location-based matching
 CREATE OR REPLACE FUNCTION find_nearby_users(
@@ -188,6 +230,7 @@ BEGIN
     WHERE 
         u.id != auth.uid()
         AND u.is_online = true
+        AND u.is_discoverable = true
         AND ST_DWithin(
             ST_GeomFromText('POINT(' || user_lng || ' ' || user_lat || ')', 4326)::geography,
             u.location::geography,
@@ -213,15 +256,134 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Function to update user location
-CREATE OR REPLACE FUNCTION update_user_location(lat FLOAT, lng FLOAT)
+-- Function to update user location with tracking
+CREATE OR REPLACE FUNCTION update_user_location(lat FLOAT, lng FLOAT, accuracy FLOAT DEFAULT NULL)
 RETURNS VOID AS $$
+DECLARE
+    new_location GEOMETRY;
+BEGIN
+    new_location := ST_GeomFromText('POINT(' || lng || ' ' || lat || ')', 4326);
+    
+    -- Update user's current location
+    UPDATE users 
+    SET 
+        location = new_location,
+        last_location_update = NOW(),
+        updated_at = NOW()
+    WHERE id = auth.uid();
+    
+    -- Insert location tracking record
+    INSERT INTO location_updates (user_id, location, accuracy)
+    VALUES (auth.uid(), new_location, accuracy);
+    
+    -- Clean up old location updates (keep last 100 per user)
+    DELETE FROM location_updates 
+    WHERE user_id = auth.uid() 
+    AND id NOT IN (
+        SELECT id FROM location_updates 
+        WHERE user_id = auth.uid() 
+        ORDER BY timestamp DESC 
+        LIMIT 100
+    );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Function to toggle user discoverability
+CREATE OR REPLACE FUNCTION toggle_discoverability(discoverable BOOLEAN)
+RETURNS BOOLEAN AS $$
 BEGIN
     UPDATE users 
     SET 
-        location = ST_GeomFromText('POINT(' || lng || ' ' || lat || ')', 4326),
+        is_discoverable = discoverable,
         updated_at = NOW()
     WHERE id = auth.uid();
+    
+    RETURN discoverable;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Function to create notification
+CREATE OR REPLACE FUNCTION create_notification(
+    target_user_id UUID,
+    notification_type TEXT,
+    notification_title TEXT,
+    notification_message TEXT,
+    notification_data JSONB DEFAULT NULL
+)
+RETURNS UUID AS $$
+DECLARE
+    notification_id UUID;
+    user_preferences JSONB;
+BEGIN
+    -- Check if user wants this type of notification
+    SELECT notification_preferences INTO user_preferences
+    FROM users WHERE id = target_user_id;
+    
+    -- Only create notification if user has enabled this type
+    IF user_preferences IS NULL OR (user_preferences ->> notification_type)::BOOLEAN = true THEN
+        INSERT INTO notifications (user_id, type, title, message, data)
+        VALUES (target_user_id, notification_type, notification_title, notification_message, notification_data)
+        RETURNING id INTO notification_id;
+        
+        RETURN notification_id;
+    END IF;
+    
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Function to mark notifications as read
+CREATE OR REPLACE FUNCTION mark_notifications_read(notification_ids UUID[] DEFAULT NULL)
+RETURNS INTEGER AS $$
+DECLARE
+    updated_count INTEGER;
+BEGIN
+    IF notification_ids IS NULL THEN
+        -- Mark all notifications as read
+        UPDATE notifications 
+        SET is_read = true 
+        WHERE user_id = auth.uid() AND is_read = false;
+    ELSE
+        -- Mark specific notifications as read
+        UPDATE notifications 
+        SET is_read = true 
+        WHERE user_id = auth.uid() AND id = ANY(notification_ids) AND is_read = false;
+    END IF;
+    
+    GET DIAGNOSTICS updated_count = ROW_COUNT;
+    RETURN updated_count;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Function to get user settings or create defaults
+CREATE OR REPLACE FUNCTION get_or_create_user_settings()
+RETURNS TABLE (
+    user_id UUID,
+    match_radius INTEGER,
+    age_range_min INTEGER,
+    age_range_max INTEGER,
+    push_notifications BOOLEAN,
+    email_notifications BOOLEAN,
+    show_distance BOOLEAN
+) AS $$
+BEGIN
+    -- Insert default settings if they don't exist
+    INSERT INTO user_settings (user_id)
+    VALUES (auth.uid())
+    ON CONFLICT (user_id) DO NOTHING;
+    
+    -- Return current settings
+    RETURN QUERY
+    SELECT 
+        s.user_id,
+        s.match_radius,
+        s.age_range_min,
+        s.age_range_max,
+        s.push_notifications,
+        s.email_notifications,
+        s.show_distance
+    FROM user_settings s
+    WHERE s.user_id = auth.uid();
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
